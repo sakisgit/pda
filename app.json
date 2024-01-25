@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "app",
-    "slug": "app",
+    "slug": "pda",
     "version": "1.0.0",
     "scheme": "app",
     "web": {
@@ -42,6 +42,13 @@
       "eas": {
         "projectId": "4362818f-e44a-4f16-b09f-2e5f7c025c79"
       }
+    },
+    "owner": "sakis_bog",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/4362818f-e44a-4f16-b09f-2e5f7c025c79"
     }
   }
 }

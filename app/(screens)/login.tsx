@@ -19,7 +19,7 @@ const Login = () => {
 
     if (error) Alert.alert(error.message);
 
-    router.push('/');
+    router.replace('/');
   }
 
   return (

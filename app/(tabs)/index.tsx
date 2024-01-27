@@ -1,5 +1,13 @@
-import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Alert } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  Alert,
+  RefreshControl,
+} from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faMotorcycle } from '@fortawesome/free-solid-svg-icons/faMotorcycle';
@@ -23,6 +31,14 @@ const HomePage = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [tables, setTables] = useState<any>([]);
   const [selectedWindow, setSelectedWindow] = useState<number>(0);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
   const get_tables_number = async () => {
     const { data } = await supabase
@@ -89,11 +105,21 @@ const HomePage = () => {
 
       await get_tables_number();
     })();
-  }, [session, refresher]);
+  }, [session, refresher, refreshing]);
 
-  return (
-    <SafeAreaView>
-      <View>
+  if (!session)
+    return (
+      <View className="items-center justify-center flex-1">
+        <TouchableOpacity
+          onPress={() => router.push('/login')}
+          className="bg-[#348ceb] w-[90%] h-10 items-center justify-center rounded mt-1.5">
+          <Text className="font-[Medium] text-white">Please Login</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  else
+    return (
+      <View className="pt-14">
         <View className="flex-row items-center justify-between mb-2">
           <Header text="PDA" style="pb-0" />
           {/* <Text className="ml-2 text-sm font-[Bold] text-white">
@@ -131,7 +157,10 @@ const HomePage = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={{ height: '100%' }} contentContainerStyle={{ paddingBottom: 240 }}>
+        <ScrollView
+          style={{ height: '100%' }}
+          contentContainerStyle={{ paddingBottom: 240 }}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           {selectedWindow == 0
             ? tables
                 // @ts-ignore
@@ -203,8 +232,7 @@ const HomePage = () => {
                 .map((table, index) => <Table table={table} key={index} />)}
         </ScrollView>
       </View>
-    </SafeAreaView>
-  );
+    );
 };
 
 export default HomePage;
